@@ -1,27 +1,35 @@
-from typing import Union
-
 from fastapi import FastAPI
-from pydantic import BaseModel
 
+chest=[
+
+]
 app = FastAPI()
 
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
+@app.post("/chest/add")
+def add_item_to_chest(item_name: str):
+    chest.append(item_name)
+    return {"message": f"{item_name} added to the chest."}
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@app.get("/chest")
+def get_chest_contents():
+    return {"chest_contents": chest}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.delete("/chest/remove/{item_name}")
+def remove_item_from_chest(item_name: str):
+    if item_name in chest:
+        chest.remove(item_name)
+        return {"message": f"{item_name} removed from the chest."}
 
+    return {"message": f"{item_name} not found in the chest."}
 
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+@app.put("/chest/change/{old_item_name}/{new_item_name}")
+def change_item_in_chest(old_item_name: str, new_item_name: str):
+    if old_item_name in chest:
+        chest[chest.index(old_item_name)] = new_item_name
+        return {"message": f"{old_item_name} changed to {new_item_name} in the chest."}
+
+    return {"message": f"{old_item_name} not found in the chest."}
+
