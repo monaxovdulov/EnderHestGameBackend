@@ -13,14 +13,14 @@ app = FastAPI()
 def authenticate_user(username: str, password: str):
     if username in users and users[username] == password:
         return True
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Ты инвалид,изгой мозги напрягай и нормально заходи.")
 
 @app.post('/register')
 def register(username: str, password: str):
     if username in users:
         return {"message": f"User {username} already exists."}
     users[username] = password
-    return {"message": f"User {username} registered successfully."}
+    return {"message": f"User {username} registered successfully."} 
 
 @app.post('/login')
 def login(username: str, password: str):
